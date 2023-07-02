@@ -6,7 +6,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
-                title: "Flappy Plane".to_string(),
+                title: "Crappy Plane".to_string(),
                 resolution: (800., 480.).into(),
                 resizable: false,
                 ..default()
@@ -30,6 +30,7 @@ fn main() {
 
 const JUMP_VELOCITY: f32 = 1000.;
 const MAX_VELOCITY: f32 = 800.;
+const MAX_ROTATION_DEGREES: f32 = 20.;
 const GRAVITY: f32 = -2000.;
 const OBSTACLE_SPEED: f32 = 500.;
 const STARTING_SPAWN_TIMER_DURATION: Duration = Duration::from_millis(500);
@@ -176,7 +177,11 @@ fn initialize_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                 font_size: 36.0,
                 color: Color::BLACK,
             },
-        ),
+        )
+        .with_style(Style {
+            margin: UiRect::all(Val::Px(5.)),
+            ..default()
+        }),
         ScoreCounter::default(),
     ));
 }
@@ -207,6 +212,10 @@ fn update_plane_velocity(
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<&mut Plane>,
 ) {
+    if time.is_paused() {
+        return;
+    }
+
     let mut plane = query.single_mut();
 
     if keyboard_input.just_pressed(KeyCode::Space) {
@@ -219,6 +228,8 @@ fn update_plane_position(time: Res<Time>, mut query: Query<(&mut Transform, &Pla
     let (mut plane_transform, plane) = query.single_mut();
     plane_transform.translation.y +=
         plane_transform.scale.y * plane.velocity * time.delta_seconds();
+    plane_transform.rotation =
+        Quat::from_rotation_z((plane.velocity / MAX_VELOCITY * MAX_ROTATION_DEGREES).to_radians());
 }
 
 fn check_game_over(
