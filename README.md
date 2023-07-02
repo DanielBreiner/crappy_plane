@@ -4,9 +4,7 @@
 
 Example project I created to try out the [Rust](https://www.rust-lang.org/) game engine [Bevy](https://bevyengine.org/) and its ECS architecture.
 
-Assets by the amazing [Kenney](https://kenney.nl/)
-
-!NOTE: if you want to build and run this project, copy any ttf font into assets/font.ttf
+Assets by the amazing [Kenney](https://kenney.nl/) (Tappy Plane pack, Font pack)
 
 ## Building for the web
 
